@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="favicon.ico" rel="shortcut icon">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+  <title>MyFlashCard</title>  
+  <script type="text/javascript">
+  var state="see";
+  var idnow=0;
+  var cardnow={};
+var ort=false;
+  var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
+
+function prik(){
+$('#stags').keyup(function() {
+    delay(function(){
+      init();
+    }, 1000);
+});
+ } 
+  
+  function getft(){
+    return ort?"or":"and";
+  }
+  
+ function init()
+{
+try{
+var tagging=$("#stags").val()!="";
+var qu=tagging?{tags:$("#stags").val(),FilterType:getft()}:{};
+
+$.post(
+  "ajax/get",
+ qu,
+  function(d){
+  
+  try
+  {
+    var card=JSON.parse(d).card;
+   $("#askt").html(card.ask);
+   $("#idc").html("Id:"+card.id);
+   $("#complete").html("Complete: "+(100-card.complete));
+    $("#answert").html(card.answer);
+    $("#tags").val(card.tags);
+    idnow=card.id;
+  }catch(e){alert("errored")}
+  
+  }
+);//.error(function(){alert("errored")});
+}catch(e){alert("errored")}
+} 
+  
+  
+function edit(){
+if (state=="see")
+{
+    $("#edit").text("Save");
+    $("#answert").addClass("hid");
+    $("#askt").addClass("hid");
+    $("#answer").removeClass("hid");
+    $("#ask").removeClass("hid");
+    $("#ask").val($("#askt").html());
+    $("#answer").val($("#answert").html());
+    $("#tags").removeAttr("readonly");
+    state="edit";
+}else{
+
+try{
+
+$.post(
+  "ajax/update",
+  {
+    id:idnow,
+    ask:$("#ask").val(),
+    answer:$("#answer").val(),
+    tags:$("#tags").val()
+  },
+  function(d){
+  
+  try
+  {
+    
+  }catch(e){alert("errored")}
+  
+  }
+);//.error(function(){alert("errored")});
+}catch(e){alert("errored")}
+
+
+ $("#edit").text("Edit");
+ $("#tags").attr("readonly","readonly");
+ $("#askt").html($("#ask").val());
+ $("#answert").html($("#answer").val());
+ $("#answert").removeClass("hid");
+    $("#askt").removeClass("hid");
+    $("#answer").addClass("hid");
+    $("#ask").addClass("hid");
+state="see";
+}
+}
+
+
+function ans(ok){
+var path="remember";
+if (!ok)
+{path="notremember"}
+ try{
+
+$.post(
+  "ajax/"+path,
+  {
+    id:idnow
+
+  },
+  function(d){
+  
+  try
+  {
+    
+  }catch(e){alert("errored")}
+  
+  }
+);//.error(function(){alert("errored")});
+}catch(e){alert("errored")}
+init();
+}
+
+
+
+  
+  </script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body onload="init();prik();">
+  <div class="container">
+
+    <header class="header clearfix">
+      <div class="logo">MyFlashCard</div>
+
+      <nav class="menu_main">
+        <ul>
+         <li><a href="add.html">Add</a></li>
+         <li><a id="idc" href="#"></a></li>
+         <li><a id="complete" href="#"></a></li>
+        </ul>
+      </nav>
+    </header>
+
+
+      <article class="article clearfix">
+
+        <div class="col_50">
+      
+            <p>Search</p><input id="stags" type="text">
+            <input type="radio" checked="checked" name="ft"  onclick="ort=!this.checked;init();">And
+            <input type="radio" name="ft" onclick="ort=this.checked;init();">Or
+        </div>
+      
+        <div class="col_50">
+      
+            <p>Tags:</p><input id="tags" type="text" readonly="readonly">
+        </div>
+<div class="clearfix"></div>
+     
+      <div id="askan">
+        <div class="col_50">
+          <textarea id="ask" class="message pole hid"></textarea>
+          <div id="askt" class="message pole"></div>
+        </div>
+
+        <div class="col_50">
+          <textarea id="answer" class="message pole hid"></textarea>
+          <div id="answert" class="message pole hid"></div>
+        </div>
+    </div>
+        
+         <div class="col_20">
+            <button class="warning"  onclick='$("#answert").addClass("hid");ans(false);'>
+                Don't remember
+            </button>
+            </div>
+          <div class="col_20">
+            <button class="message" onclick='$("#answert").addClass("hid");init();'>
+                Skip
+            </button>
+            </div>
+        <div class="col_20">
+            <button id="edit" class="message"  onclick="edit();">
+                Edit
+            </button>
+            </div>
+        
+        <div class="col_20">
+            <button class="message" onclick='$("#answert").removeClass("hid");'>
+                Answer
+            </button>
+            </div>
+        <div class="col_20">
+            <button class="success" onclick='$("#answert").addClass("hid");ans(true);'>
+                Remember!
+            </button>
+            </div>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

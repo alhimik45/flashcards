@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="favicon.ico" rel="shortcut icon">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+  <title>MyFlashCard</title>  
+    <script type="text/javascript">
+  function add(){
+  try{
+
+$.post(
+  "ajax/add",
+  {
+
+    ask:$("#ask").val(),
+    answer:$("#answer").val(),
+    tags:$("#tags").val()
+  },
+  function(d){
+  
+  try
+  {
+    
+  }catch(e){alert("errored")}
+  
+  }
+);//.error(function(){alert("errored")});
+}catch(e){alert("errored")}
+  
+  }
+  
+  function del(){
+  try{
+
+$.post(
+  "ajax/delete",
+  {
+    id:$("#idc").val()
+
+  },
+  function(d){
+  
+  try
+  {
+    
+  }catch(e){alert("errored")}
+  
+  }
+);//.error(function(){alert("errored")});
+}catch(e){alert("errored")}
+  }
+  </script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div class="container">
+
+    <header class="header clearfix">
+      <div class="logo">MyFlashCard</div>
+
+      <nav class="menu_main">
+        <ul>
+         <li><a href="index.html">Main</a></li>
+        </ul>
+      </nav>
+    </header>
+
+
+      <article class="article clearfix">
+      
+      <div class="col_50">
+      
+            <p>Id:</p><input id="idc" type="text">
+        </div>
+      
+        <div class="col_50">
+      
+            <p>Tags:</p><input id="tags" type="text">
+        </div>
+<div class="clearfix"></div>
+      
+      
+      <div id="askan">
+        <div class="col_50">
+          <textarea id="ask" class="message" style="width:85%;height:250px"></textarea>
+        </div>
+
+        <div class="col_50">
+         <textarea id="answer" class="message" style="width:85%;height:250px"></textarea>
+        </div>
+    </div>
+         <div class="col_25">&nbsp;</div>
+         
+          <div class="col_33">
+            <button class="message" onclick="add();">
+                Add
+            </button>
+            </div>
+        <div class="col_25">
+            <button class="message" onclick="del();">
+                Delete
+            </button>
+            </div>    
+      </article>
+    </div>
+  </div>
+</body>
+</html>
